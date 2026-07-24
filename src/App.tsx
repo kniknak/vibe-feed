@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { fetchAllFeeds } from "./lib/rss";
-import { lexicalRanker } from "./lib/ranker";
+import { createEmbeddingRanker } from "./lib/ranker";
 import type { UserInterests } from "./lib/personalize";
 import { loadInterests, saveInterests, addTopic, removeTopic } from "./lib/interests";
 import { mockSummarizer, isWebGPUAvailable, getMemoryInfo, type Summarizer } from "./lib/summarizer";
@@ -8,8 +8,9 @@ import type { FeedItem } from "./lib/types";
 
 // Minimal UI. Each card shows title + full text + an LLM summary (mockSummarizer
 // by default). The interests panel lets the reader edit their topics; the feed
-// is reordered through the Ranker seam (lexicalRanker) whenever items or
-// interests change.
+// is reordered through the Ranker seam whenever items or interests change. The
+// active ranker is the on-device embedding reranker, which degrades to the
+// lexical baseline on any failure — the header label states which one ran.
 
 // Strip HTML to plain text for display/summarization.
 function toPlainText(html: string): string {
@@ -62,6 +63,11 @@ export function App() {
 
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [ranking, setRanking] = useState(false);
+  const [mode, setMode] = useState<"semantic" | "lexical" | null>(null);
+
+  // One stable ranker for the app's lifetime — its loaded model and per-id
+  // vector cache live inside it, so they survive re-renders and re-ranks.
+  const ranker = useMemo(() => createEmbeddingRanker(setMode), []);
 
   useEffect(() => {
     fetchAllFeeds()
@@ -80,7 +86,7 @@ export function App() {
   useEffect(() => {
     let alive = true;
     setRanking(true);
-    lexicalRanker.rank(items, interests).then((ranked) => {
+    ranker.rank(items, interests).then((ranked) => {
       if (!alive) return;
       setFeed(ranked);
       setRanking(false);
@@ -88,7 +94,7 @@ export function App() {
     return () => {
       alive = false;
     };
-  }, [items, interests]);
+  }, [items, interests, ranker]);
 
   const commitDraft = () => {
     setInterests((prev) => addTopic(prev, draft));
@@ -106,6 +112,13 @@ export function App() {
     <main className="app">
       <header className="app__header">
         <h1>Vibe Feed</h1>
+        {/* Which ranker produced the current order: the on-device embeddings, or
+            the lexical baseline it fell back to. Shown once the first rank runs. */}
+        {mode && (
+          <span className="app__mode">
+            ranking: {mode === "semantic" ? "semantic" : "lexical (fallback)"}
+          </span>
+        )}
         <span className="app__hint">
           WebGPU: {isWebGPUAvailable() ? "available" : "not available (mock LLM)"}
           {(() => {

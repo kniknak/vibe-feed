@@ -35,6 +35,15 @@ body {
   color: #888;
 }
 
+.app__mode {
+  font-size: 12px;
+  color: #4338ca;
+  background: #eef2ff;
+  border: 1px solid #d7defb;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
 .interests {
   background: #eef2ff;
   border: 1px solid #d7defb;
