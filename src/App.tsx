@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { fetchAllFeeds } from "./lib/rss";
-import { personalize, EMPTY_INTERESTS, type UserInterests } from "./lib/personalize";
+import { lexicalRanker } from "./lib/ranker";
+import type { UserInterests } from "./lib/personalize";
+import { loadInterests, saveInterests, addTopic, removeTopic } from "./lib/interests";
 import { mockSummarizer, isWebGPUAvailable, getMemoryInfo, type Summarizer } from "./lib/summarizer";
 import type { FeedItem } from "./lib/types";
 
 // Minimal UI. Each card shows title + full text + an LLM summary (mockSummarizer
-// by default). The interests panel below is a placeholder — personalize()
-// currently ignores it and the feed is shown unchanged.
+// by default). The interests panel lets the reader edit their topics; the feed
+// is reordered through the Ranker seam (lexicalRanker) whenever items or
+// interests change.
 
 // Strip HTML to plain text for display/summarization.
 function toPlainText(html: string): string {
@@ -52,9 +55,13 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Interest model lives in memory here. Persistence (localStorage / IndexedDB /
-  // DuckDB-WASM / …) is your call; nothing forces a choice.
-  const [interests] = useState<UserInterests>(EMPTY_INTERESTS);
+  // Interest model, restored from localStorage (prefilled defaults on first
+  // visit) and persisted on every change.
+  const [interests, setInterests] = useState<UserInterests>(() => loadInterests());
+  const [draft, setDraft] = useState("");
+
+  const [feed, setFeed] = useState<FeedItem[]>([]);
+  const [ranking, setRanking] = useState(false);
 
   useEffect(() => {
     fetchAllFeeds()
@@ -63,8 +70,37 @@ export function App() {
       .finally(() => setLoading(false));
   }, []);
 
-  // personalize() is a stub — returns items unchanged for now.
-  const feed = useMemo(() => personalize(items, interests), [items, interests]);
+  useEffect(() => {
+    saveInterests(interests);
+  }, [interests]);
+
+  // Rank the feed through the async Ranker seam, off the render path, whenever
+  // the items or interests change. `alive` guards against a stale async result
+  // landing after a newer rank started.
+  useEffect(() => {
+    let alive = true;
+    setRanking(true);
+    lexicalRanker.rank(items, interests).then((ranked) => {
+      if (!alive) return;
+      setFeed(ranked);
+      setRanking(false);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [items, interests]);
+
+  const commitDraft = () => {
+    setInterests((prev) => addTopic(prev, draft));
+    setDraft("");
+  };
+
+  const onDraftKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      commitDraft();
+    }
+  };
 
   return (
     <main className="app">
@@ -82,16 +118,42 @@ export function App() {
         </span>
       </header>
 
-      {/* Interests panel — placeholder. This is where the user says what they
-          want to see. Design it: free text? tags? likes? */}
+      {/* Interests panel — the reader edits their topics here. Type a topic and
+          press Enter or comma to add a chip; the × removes it. Every change
+          re-ranks the feed and persists to localStorage. */}
       <section className="interests">
         <span className="interests__label">My interests:</span>
-        <span className="interests__value">
-          {interests.topics.length ? interests.topics.join(", ") : "(none yet — cold start)"}
-        </span>
+        <ul className="interests__chips">
+          {interests.topics.map((topic) => (
+            <li key={topic} className="chip">
+              {topic}
+              <button
+                type="button"
+                className="chip__remove"
+                aria-label={`Remove ${topic}`}
+                onClick={() => setInterests((prev) => removeTopic(prev, topic))}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+          {interests.topics.length === 0 && (
+            <li className="interests__empty">(none yet — cold start)</li>
+          )}
+        </ul>
+        <input
+          className="interests__input"
+          type="text"
+          value={draft}
+          placeholder="Add a topic and press Enter…"
+          aria-label="Add an interest topic"
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={onDraftKeyDown}
+        />
       </section>
 
       {loading && <p className="app__state">Loading feeds…</p>}
+      {ranking && !loading && <p className="app__state">Ranking…</p>}
       {error && <p className="app__state app__state--error">{error}</p>}
 
       <ul className="feed">

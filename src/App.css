@@ -49,8 +49,60 @@ body {
   margin-right: 6px;
 }
 
-.interests__value {
-  color: #555;
+.interests__chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #d7defb;
+  color: #3730a3;
+  border-radius: 999px;
+  padding: 3px 6px 3px 10px;
+  font-size: 13px;
+}
+
+.chip__remove {
+  border: none;
+  background: transparent;
+  color: #6366f1;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 3px;
+  border-radius: 999px;
+}
+
+.chip__remove:hover {
+  color: #3730a3;
+  background: #c3cdf7;
+}
+
+.interests__empty {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.interests__input {
+  width: 100%;
+  border: 1px solid #d7defb;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.interests__input:focus {
+  outline: none;
+  border-color: #6366f1;
 }
 
 .app__state {
