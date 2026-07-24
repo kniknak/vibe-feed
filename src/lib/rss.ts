@@ -1,11 +1,11 @@
 // Fetch and parse RSS/Atom directly in the browser.
 //
-// THIS IS DELIBERATELY NAIVE. Sharp edges left for you:
-//   1. Error handling. fetchAllFeeds below uses Promise.all — one failing feed
-//      takes the whole load down (a flaky network source is enough). Consider
-//      isolating failures per source.
-//   2. Formats. The parser below only understands RSS 2.0 (<item>). Atom feeds
-//      (<entry>) parse as empty.
+// THIS IS DELIBERATELY NAIVE. Sharp edge left for you:
+//   Formats. The parser below only understands RSS 2.0 (<item>). Atom feeds
+//   (<entry>) parse as empty.
+//
+// (Per-source failure isolation — a flaky source no longer blanks the whole
+// load — is handled in fetchAllFeeds / collectSettled below.)
 //
 // The default sources (see feeds.ts) all load with a plain fetch — local mock
 // is served by the dev server, the network ones send CORS headers. If you add
@@ -45,8 +45,25 @@ async function fetchFeed(source: FeedSource): Promise<FeedItem[]> {
   });
 }
 
-// Loads all feeds. NAIVE: Promise.all — any failing feed takes everything down.
+// Loads all feeds. Sources are isolated: a failing feed is dropped instead of
+// taking the whole load down, so one dead/flaky source can't blank the feed.
 export async function fetchAllFeeds(): Promise<FeedItem[]> {
-  const perFeed = await Promise.all(FEEDS.map(fetchFeed));
-  return perFeed.flat();
+  const results = await Promise.allSettled(FEEDS.map(fetchFeed));
+  return collectSettled(results);
+}
+
+// Gather the items from every source that resolved; drop (and warn about) the
+// ones that rejected. Pure — no network, no DOM — so it can be unit-tested.
+export function collectSettled(
+  results: PromiseSettledResult<FeedItem[]>[]
+): FeedItem[] {
+  const items: FeedItem[] = [];
+  for (const result of results) {
+    if (result.status === "fulfilled") {
+      items.push(...result.value);
+    } else {
+      console.warn("feed source failed, skipping:", result.reason);
+    }
+  }
+  return items;
 }
