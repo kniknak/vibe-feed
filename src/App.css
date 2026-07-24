@@ -115,10 +115,32 @@ body {
   color: #c0392b;
 }
 
+.feed__bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
 .feed__status {
   font-size: 13px;
   color: #6b7280;
-  margin: 0 0 12px;
+  margin: 0;
+}
+
+.feed__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #4338ca;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.feed__filter input {
+  cursor: pointer;
 }
 
 .feed {
@@ -137,6 +159,13 @@ body {
   padding: 12px 14px;
 }
 
+.card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .card__title {
   font-weight: 600;
   color: #1a1a1a;
@@ -145,6 +174,19 @@ body {
 
 .card__title:hover {
   text-decoration: underline;
+}
+
+/* Relevance badge — how strongly the article matched the reader's interests. */
+.card__match {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 1px 8px;
+  white-space: nowrap;
 }
 
 .card__meta {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { fetchAllFeeds } from "./lib/rss";
-import { createEmbeddingRanker } from "./lib/ranker";
+import { createEmbeddingRanker, type RankedItem } from "./lib/ranker";
 import { PRESET_TOPICS, type UserInterests } from "./lib/personalize";
 import { loadInterests, saveInterests, addTopic, toggleTopic } from "./lib/interests";
 import { mockSummarizer, isWebGPUAvailable, getMemoryInfo, type Summarizer } from "./lib/summarizer";
@@ -17,7 +17,17 @@ function toPlainText(html: string): string {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function Card({ item, summarizer }: { item: FeedItem; summarizer: Summarizer }) {
+function Card({
+  item,
+  relevance,
+  showMatch,
+  summarizer,
+}: {
+  item: FeedItem;
+  relevance: number;
+  showMatch: boolean;
+  summarizer: Summarizer;
+}) {
   const fullText = useMemo(() => toPlainText(item.content), [item.content]);
   const [summary, setSummary] = useState<string>("…");
 
@@ -33,9 +43,19 @@ function Card({ item, summarizer }: { item: FeedItem; summarizer: Summarizer }) 
 
   return (
     <li className="card">
-      <a className="card__title" href={item.link} target="_blank" rel="noreferrer">
-        {item.title}
-      </a>
+      <div className="card__head">
+        <a className="card__title" href={item.link} target="_blank" rel="noreferrer">
+          {item.title}
+        </a>
+        {/* Relevance badge — how strongly this article matched the interests,
+            relative to the rest of this rank. Hidden when the feed is
+            chronological, since there's no ranking to explain. */}
+        {showMatch && (
+          <span className="card__match" title="Relevance to your interests">
+            {relevance}% match
+          </span>
+        )}
+      </div>
       <div className="card__meta">{item.sourceTitle}</div>
 
       <div className="card__summary">
@@ -61,13 +81,23 @@ export function App() {
   const [interests, setInterests] = useState<UserInterests>(() => loadInterests());
   const [draft, setDraft] = useState("");
 
-  const [feed, setFeed] = useState<FeedItem[]>([]);
+  const [feed, setFeed] = useState<RankedItem[]>([]);
   const [ranking, setRanking] = useState(false);
   const [mode, setMode] = useState<"semantic" | "lexical" | null>(null);
+  // Whether the current order is a real personalized ranking (true) or the
+  // honest chronological fallback (false — no interests, or nothing matched
+  // strongly). Drives the status line and whether "% match" badges show.
+  const [personalized, setPersonalized] = useState(true);
+  // Optional filter: hide weak matches so the feed is only the strong ones.
+  // Off by default — ranking already surfaces the best first without hiding.
+  const [hideLowMatches, setHideLowMatches] = useState(false);
 
   // One stable ranker for the app's lifetime — its loaded model and per-id
   // vector cache live inside it, so they survive re-renders and re-ranks.
-  const ranker = useMemo(() => createEmbeddingRanker(setMode), []);
+  const ranker = useMemo(
+    () => createEmbeddingRanker(setMode, setPersonalized),
+    []
+  );
 
   useEffect(() => {
     fetchAllFeeds()
@@ -124,18 +154,32 @@ export function App() {
 
   const topicCount = interests.topics.length;
 
+  // Below this relevance a match is weak enough to hide when the reader opts in.
+  const LOW_MATCH_THRESHOLD = 30;
+
+  // What actually renders. Hiding weak matches only makes sense on a personalized
+  // ranking (a chronological feed has no relevance to filter on), so the toggle
+  // is a no-op otherwise.
+  const visible =
+    personalized && hideLowMatches
+      ? feed.filter((r) => r.relevance >= LOW_MATCH_THRESHOLD)
+      : feed;
+
   // Persistent status line above the feed: skeletons cover the initial fetch,
   // "Ranking…" shows while a rank is in flight (real during the embeddings model
-  // load), otherwise the article count + how the order was produced.
+  // load), otherwise the article count + how the order was *actually* produced —
+  // a real ranking, or the honest chronological fallback.
   const statusText = loading
     ? "Loading feeds…"
     : ranking
       ? "Ranking…"
-      : topicCount === 0
-        ? `${feed.length} articles · chronological (no interests)`
-        : `${feed.length} articles · ranked by ${topicCount} ${
+      : personalized
+        ? `${visible.length} articles · ranked by ${topicCount} ${
             topicCount === 1 ? "interest" : "interests"
-          }`;
+          }`
+        : topicCount === 0
+          ? `${visible.length} articles · chronological (no interests)`
+          : `${visible.length} articles · chronological (no strong matches)`;
 
   return (
     <main className="app">
@@ -196,9 +240,23 @@ export function App() {
       {error ? (
         <p className="app__state app__state--error">{error}</p>
       ) : (
-        <p className="feed__status" aria-live="polite">
-          {statusText}
-        </p>
+        <div className="feed__bar">
+          <p className="feed__status" aria-live="polite">
+            {statusText}
+          </p>
+          {/* Filter the ranking down to strong matches. Only offered when there
+              is a real ranking to filter (personalized) — off by default. */}
+          {!loading && personalized && (
+            <label className="feed__filter">
+              <input
+                type="checkbox"
+                checked={hideLowMatches}
+                onChange={(e) => setHideLowMatches(e.target.checked)}
+              />
+              Hide low matches
+            </label>
+          )}
+        </div>
       )}
 
       {loading ? (
@@ -215,8 +273,14 @@ export function App() {
         </ul>
       ) : (
         <ul className="feed">
-          {feed.map((item) => (
-            <Card key={item.id} item={item} summarizer={mockSummarizer} />
+          {visible.map((r) => (
+            <Card
+              key={r.item.id}
+              item={r.item}
+              relevance={r.relevance}
+              showMatch={personalized}
+              summarizer={mockSummarizer}
+            />
           ))}
         </ul>
       )}
