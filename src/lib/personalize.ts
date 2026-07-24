@@ -21,6 +21,21 @@ export const DEFAULT_INTERESTS: UserInterests = {
   topics: ["Web platform", "Offline-first", "AI & LLMs", "Developer tools"],
 };
 
+// The curated topics offered as toggle chips in the interests panel. Toggling is
+// lower-friction than typing and makes the available topics discoverable; the
+// defaults above are a subset that starts active. Readers can still add anything
+// outside this list via the custom-topic input.
+export const PRESET_TOPICS: string[] = [
+  "AI & LLMs",
+  "Web platform",
+  "Developer tools",
+  "Security",
+  "Open source",
+  "Rust",
+  "Databases",
+  "Offline-first",
+];
+
 // Strip HTML and split into lowercased word tokens.
 function tokenize(text: string): string[] {
   return text

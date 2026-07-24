@@ -4,6 +4,7 @@ import {
   saveInterests,
   addTopic,
   removeTopic,
+  toggleTopic,
 } from "./interests";
 import { DEFAULT_INTERESTS } from "./personalize";
 
@@ -62,5 +63,29 @@ describe("addTopic", () => {
 describe("removeTopic", () => {
   it("removes the matching topic", () => {
     expect(removeTopic({ topics: ["a", "b"] }, "a")).toEqual({ topics: ["b"] });
+  });
+});
+
+describe("toggleTopic", () => {
+  it("adds a topic that is absent, trimming whitespace", () => {
+    expect(toggleTopic({ topics: ["Rust"] }, "  Security  ")).toEqual({
+      topics: ["Rust", "Security"],
+    });
+  });
+
+  it("removes a topic that is already present", () => {
+    expect(toggleTopic({ topics: ["Rust", "Security"] }, "Security")).toEqual({
+      topics: ["Rust"],
+    });
+  });
+
+  it("matches case-insensitively when toggling off", () => {
+    expect(toggleTopic({ topics: ["Rust"] }, "rust")).toEqual({ topics: [] });
+  });
+
+  it("rejects blank / whitespace-only input", () => {
+    const interests = { topics: ["Rust"] };
+    expect(toggleTopic(interests, "")).toEqual(interests);
+    expect(toggleTopic(interests, "   ")).toEqual(interests);
   });
 });

@@ -58,45 +58,38 @@ body {
   margin-right: 6px;
 }
 
-.interests__chips {
-  list-style: none;
+.interests__toggles {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 0;
   margin: 8px 0;
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: #d7defb;
+.toggle {
+  border: 1px solid #d7defb;
+  background: #fff;
   color: #3730a3;
   border-radius: 999px;
-  padding: 3px 6px 3px 10px;
+  padding: 4px 12px;
   font-size: 13px;
-}
-
-.chip__remove {
-  border: none;
-  background: transparent;
-  color: #6366f1;
+  font-family: inherit;
   cursor: pointer;
-  font-size: 15px;
-  line-height: 1;
-  padding: 0 3px;
-  border-radius: 999px;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
-.chip__remove:hover {
-  color: #3730a3;
-  background: #c3cdf7;
+.toggle:hover {
+  border-color: #6366f1;
 }
 
-.interests__empty {
-  color: #6b7280;
-  font-style: italic;
+.toggle--on {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.toggle--on:hover {
+  background: #3730a3;
+  border-color: #3730a3;
 }
 
 .interests__input {
@@ -120,6 +113,12 @@ body {
 
 .app__state--error {
   color: #c0392b;
+}
+
+.feed__status {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 12px;
 }
 
 .feed {
@@ -188,4 +187,41 @@ body {
 .card__full p {
   margin: 8px 0 0;
   line-height: 1.5;
+}
+
+/* Loading placeholders shown in place of cards during the initial feed fetch. */
+.card--skeleton {
+  pointer-events: none;
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e2e6ee 37%, #eef0f4 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+.skeleton--title {
+  height: 16px;
+  width: 60%;
+}
+
+.skeleton--meta {
+  height: 10px;
+  width: 30%;
+  margin: 10px 0;
+}
+
+.skeleton--summary {
+  height: 40px;
+  width: 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }

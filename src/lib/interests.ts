@@ -55,3 +55,22 @@ export function removeTopic(
 ): UserInterests {
   return { topics: interests.topics.filter((t) => t !== topic) };
 }
+
+// Toggle a topic on or off, returning a new interest model. Case-insensitive:
+// a topic already present (any casing) is removed; an absent one is added
+// trimmed. Blank/whitespace-only input is rejected (the model is unchanged).
+// This backs the preset toggle chips.
+export function toggleTopic(
+  interests: UserInterests,
+  raw: string
+): UserInterests {
+  const topic = raw.trim();
+  if (topic === "") return interests;
+
+  const lower = topic.toLowerCase();
+  const exists = interests.topics.some((t) => t.toLowerCase() === lower);
+  if (exists) {
+    return { topics: interests.topics.filter((t) => t.toLowerCase() !== lower) };
+  }
+  return { topics: [...interests.topics, topic] };
+}
