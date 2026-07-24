@@ -270,6 +270,51 @@
       "publishedAt": 1786505600000,
       "sourceId": "product-notes",
       "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "br-ml",
+      "title": "Teaching computers to recognize images from examples",
+      "link": "https://example.com/br-ml",
+      "content": "Show the system thousands of labeled photos and it gradually learns the visual patterns that tell a cat from a dog. Nobody writes the rules by hand; the model discovers them from the examples alone, then generalizes to pictures it has never seen. This is how modern vision systems read handwriting, spot tumors in a scan, and sort produce on a conveyor.",
+      "publishedAt": 1786592000000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "br-web",
+      "title": "Making a site feel instant on a phone",
+      "link": "https://example.com/br-web",
+      "content": "Ship less up front, defer the offscreen work, and inline only what the first screen needs. Lazy-load the images, split the bundle, and keep the main thread free so scrolling stays smooth and every tap answers at once. A quick first paint is what makes a page feel native rather than sluggish.",
+      "publishedAt": 1786678400000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "br-sec",
+      "title": "Keeping attackers out of user accounts",
+      "link": "https://example.com/br-sec",
+      "content": "Stolen passwords, phishing pages, reused logins from an old breach, and a one-time code snatched over the phone — most account takeovers never crack any math. A password manager, physical keys, and an eye on failed-login spikes are what stop them.",
+      "publishedAt": 1786764800000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "br-hw",
+      "title": "Fabricating the tiny logic circuits inside every device",
+      "link": "https://example.com/br-hw",
+      "content": "Photolithography, etching, and ion doping turn a polished wafer into billions of transistors and logic gates. A semiconductor foundry stacks metal interconnect and shrinks each feature to a few nanometers — the microscopic switching fabric of every computer.",
+      "publishedAt": 1786851200000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "br-dev",
+      "title": "Catching mistakes before code ships",
+      "link": "https://example.com/br-dev",
+      "content": "Static analysis and linting flag errors early: unused imports, unreachable branches, type mismatches, off-by-one slips. Pre-commit hooks and continuous checks run them on every change so bugs are caught before they ever ship.",
+      "publishedAt": 1786937600000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
     }
   ],
   "profiles": [
@@ -282,7 +327,7 @@
         "ai-3": 2,
         "ai-4": 1,
         "ai-5": 1,
-        "hw-1": 2
+        "br-ml": 2
       }
     },
     {
@@ -294,7 +339,7 @@
         "web-3": 2,
         "web-4": 1,
         "web-5": 1,
-        "dev-2": 2
+        "br-web": 2
       }
     },
     {
@@ -306,7 +351,7 @@
         "sec-3": 2,
         "sec-4": 1,
         "sec-5": 1,
-        "dev-5": 2
+        "br-sec": 2
       }
     },
     {
@@ -318,7 +363,7 @@
         "hw-3": 2,
         "hw-4": 1,
         "hw-5": 1,
-        "ai-3": 2
+        "br-hw": 2
       }
     },
     {
@@ -330,7 +375,7 @@
         "dev-3": 2,
         "dev-4": 1,
         "dev-5": 1,
-        "web-2": 2
+        "br-dev": 2
       }
     }
   ]

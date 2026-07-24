@@ -16,9 +16,12 @@ export interface UserInterests {
 export const EMPTY_INTERESTS: UserInterests = { topics: [] };
 
 // Sensible cold-start interests so a first-time reader sees a personalized order
-// immediately instead of a flat chronological list. The reader can edit these.
+// immediately instead of a flat chronological list. Kept few and distinct on
+// purpose: broad, overlapping defaults match nearly everything, which makes the
+// default the *least* personalized view — three sharp topics show the ranking
+// actually working out of the box. The reader can edit these.
 export const DEFAULT_INTERESTS: UserInterests = {
-  topics: ["Web platform", "Offline-first", "AI & LLMs", "Developer tools"],
+  topics: ["AI & LLMs", "Web platform", "Security"],
 };
 
 // The curated topics offered as toggle chips in the interests panel. Toggling is

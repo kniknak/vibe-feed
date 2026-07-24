@@ -65,7 +65,7 @@ async function evaluateRanker(ranker: Ranker): Promise<RankerResult> {
     perProfile.push({
       profile: profile.id,
       scores: scoreProfile(
-        ranked.map((i) => i.id),
+        ranked.map((r) => r.item.id),
         profile.relevance
       ),
     });

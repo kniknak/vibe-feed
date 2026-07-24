@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { cosineSimilarity, createEmbeddingRanker } from "./ranker";
-import { personalize } from "./personalize";
 import type { FeedItem } from "./types";
 
 // The model is never downloaded in tests — the whole transformers module is
@@ -66,8 +65,10 @@ describe("createEmbeddingRanker — fallback (AC-3.3)", () => {
 
     const ranked = await ranker.rank(items, interests);
 
-    expect(ranked).toEqual(personalize(items, interests));
-    expect(ranked.map((i) => i.id)).toEqual(["hit", "off"]);
+    // Falls back to the lexical order — the title match outranks the off-topic
+    // item — and reports it as a real personalized ranking with a "% match".
+    expect(ranked.map((r) => r.item.id)).toEqual(["hit", "off"]);
+    expect(ranked[0].relevance).toBe(100);
     expect(onMode).toHaveBeenCalledWith("lexical");
   });
 });
