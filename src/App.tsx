@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { fetchAllFeeds } from "./lib/rss";
 import { createEmbeddingRanker } from "./lib/ranker";
-import type { UserInterests } from "./lib/personalize";
-import { loadInterests, saveInterests, addTopic, removeTopic } from "./lib/interests";
+import { PRESET_TOPICS, type UserInterests } from "./lib/personalize";
+import { loadInterests, saveInterests, addTopic, toggleTopic } from "./lib/interests";
 import { mockSummarizer, isWebGPUAvailable, getMemoryInfo, type Summarizer } from "./lib/summarizer";
 import type { FeedItem } from "./lib/types";
 
@@ -108,6 +108,35 @@ export function App() {
     }
   };
 
+  // Whether a topic is currently in the interest model (case-insensitive, so a
+  // preset and a stored custom topic of the same word don't both light up).
+  const activeTopics = new Set(interests.topics.map((t) => t.toLowerCase()));
+  const isActive = (topic: string) => activeTopics.has(topic.toLowerCase());
+
+  // The toggle chips: every preset, plus any active topic the reader added that
+  // isn't a preset (so custom interests stay visible and removable).
+  const toggleTopics = [
+    ...PRESET_TOPICS,
+    ...interests.topics.filter(
+      (t) => !PRESET_TOPICS.some((p) => p.toLowerCase() === t.toLowerCase())
+    ),
+  ];
+
+  const topicCount = interests.topics.length;
+
+  // Persistent status line above the feed: skeletons cover the initial fetch,
+  // "Ranking…" shows while a rank is in flight (real during the embeddings model
+  // load), otherwise the article count + how the order was produced.
+  const statusText = loading
+    ? "Loading feeds…"
+    : ranking
+      ? "Ranking…"
+      : topicCount === 0
+        ? `${feed.length} articles · chronological (no interests)`
+        : `${feed.length} articles · ranked by ${topicCount} ${
+            topicCount === 1 ? "interest" : "interests"
+          }`;
+
   return (
     <main className="app">
       <header className="app__header">
@@ -131,49 +160,66 @@ export function App() {
         </span>
       </header>
 
-      {/* Interests panel — the reader edits their topics here. Type a topic and
-          press Enter or comma to add a chip; the × removes it. Every change
-          re-ranks the feed and persists to localStorage. */}
+      {/* Interests panel — the reader toggles the topics they care about. Each
+          chip is a toggle (aria-pressed): active = filled, inactive = outline.
+          Every toggle re-ranks the feed and persists to localStorage. The input
+          below adds a custom topic outside the presets. */}
       <section className="interests">
         <span className="interests__label">My interests:</span>
-        <ul className="interests__chips">
-          {interests.topics.map((topic) => (
-            <li key={topic} className="chip">
-              {topic}
+        <div className="interests__toggles">
+          {toggleTopics.map((topic) => {
+            const active = isActive(topic);
+            return (
               <button
+                key={topic}
                 type="button"
-                className="chip__remove"
-                aria-label={`Remove ${topic}`}
-                onClick={() => setInterests((prev) => removeTopic(prev, topic))}
+                className={active ? "toggle toggle--on" : "toggle"}
+                aria-pressed={active}
+                onClick={() => setInterests((prev) => toggleTopic(prev, topic))}
               >
-                ×
+                {topic}
               </button>
-            </li>
-          ))}
-          {interests.topics.length === 0 && (
-            <li className="interests__empty">(none yet — cold start)</li>
-          )}
-        </ul>
+            );
+          })}
+        </div>
         <input
           className="interests__input"
           type="text"
           value={draft}
-          placeholder="Add a topic and press Enter…"
-          aria-label="Add an interest topic"
+          placeholder="Add a custom topic and press Enter…"
+          aria-label="Add a custom interest topic"
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onDraftKeyDown}
         />
       </section>
 
-      {loading && <p className="app__state">Loading feeds…</p>}
-      {ranking && !loading && <p className="app__state">Ranking…</p>}
-      {error && <p className="app__state app__state--error">{error}</p>}
+      {error ? (
+        <p className="app__state app__state--error">{error}</p>
+      ) : (
+        <p className="feed__status" aria-live="polite">
+          {statusText}
+        </p>
+      )}
 
-      <ul className="feed">
-        {feed.map((item) => (
-          <Card key={item.id} item={item} summarizer={mockSummarizer} />
-        ))}
-      </ul>
+      {loading ? (
+        // Skeleton cards make the initial fetch obvious instead of a line of text
+        // that's easy to miss.
+        <ul className="feed" aria-hidden="true">
+          {Array.from({ length: 6 }, (_, i) => (
+            <li key={i} className="card card--skeleton">
+              <div className="skeleton skeleton--title" />
+              <div className="skeleton skeleton--meta" />
+              <div className="skeleton skeleton--summary" />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="feed">
+          {feed.map((item) => (
+            <Card key={item.id} item={item} summarizer={mockSummarizer} />
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
