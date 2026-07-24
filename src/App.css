@@ -35,6 +35,15 @@ body {
   color: #888;
 }
 
+.app__mode {
+  font-size: 12px;
+  color: #4338ca;
+  background: #eef2ff;
+  border: 1px solid #d7defb;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
 .interests {
   background: #eef2ff;
   border: 1px solid #d7defb;
@@ -49,8 +58,53 @@ body {
   margin-right: 6px;
 }
 
-.interests__value {
-  color: #555;
+.interests__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.toggle {
+  border: 1px solid #d7defb;
+  background: #fff;
+  color: #3730a3;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.toggle:hover {
+  border-color: #6366f1;
+}
+
+.toggle--on {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.toggle--on:hover {
+  background: #3730a3;
+  border-color: #3730a3;
+}
+
+.interests__input {
+  width: 100%;
+  border: 1px solid #d7defb;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.interests__input:focus {
+  outline: none;
+  border-color: #6366f1;
 }
 
 .app__state {
@@ -59,6 +113,34 @@ body {
 
 .app__state--error {
   color: #c0392b;
+}
+
+.feed__bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.feed__status {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.feed__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #4338ca;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.feed__filter input {
+  cursor: pointer;
 }
 
 .feed {
@@ -77,6 +159,13 @@ body {
   padding: 12px 14px;
 }
 
+.card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .card__title {
   font-weight: 600;
   color: #1a1a1a;
@@ -85,6 +174,19 @@ body {
 
 .card__title:hover {
   text-decoration: underline;
+}
+
+/* Relevance badge — how strongly the article matched the reader's interests. */
+.card__match {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 1px 8px;
+  white-space: nowrap;
 }
 
 .card__meta {
@@ -127,4 +229,41 @@ body {
 .card__full p {
   margin: 8px 0 0;
   line-height: 1.5;
+}
+
+/* Loading placeholders shown in place of cards during the initial feed fetch. */
+.card--skeleton {
+  pointer-events: none;
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #eef0f4 25%, #e2e6ee 37%, #eef0f4 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+.skeleton--title {
+  height: 16px;
+  width: 60%;
+}
+
+.skeleton--meta {
+  height: 10px;
+  width: 30%;
+  margin: 10px 0;
+}
+
+.skeleton--summary {
+  height: 40px;
+  width: 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }

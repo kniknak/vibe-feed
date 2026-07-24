@@ -1,0 +1,382 @@
+{
+  "_comment": "Golden set for ranking evals. Authored (not scraped), license-clean, deterministic. Items are FeedItem-shaped; profiles carry graded relevance labels (2 = highly relevant, 1 = related; ids absent from a profile are off-topic = 0). Topics are deliberately discriminating so a good ranker clearly beats a bad one, and each profile hides one semantically-relevant item that shares no topic words with the profile — the lexical ranker misses it, leaving measurable headroom for the Inc 3 embedding ranker.",
+  "items": [
+    {
+      "id": "ai-1",
+      "title": "Fine-tuning an LLM for your own domain",
+      "link": "https://example.com/ai-1",
+      "content": "Fine-tuning adapts a pretrained model with a small labelled set. We walk through data prep, LoRA adapters, and evaluation — a practical machine learning workflow for shipping a domain LLM.",
+      "publishedAt": 1784000000000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "ai-2",
+      "title": "How transformers power modern neural networks",
+      "link": "https://example.com/ai-2",
+      "content": "Attention lets a model weigh every token against the others. This piece unpacks why transformers replaced recurrent neural networks for most sequence tasks in modern AI.",
+      "publishedAt": 1784086400000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "ai-3",
+      "title": "Running quantized neural networks at the edge",
+      "link": "https://example.com/ai-3",
+      "content": "Quantization shrinks a trained model so it runs on constrained devices with tight latency budgets. We benchmark accuracy loss across int8 and int4 for on-device machine learning.",
+      "publishedAt": 1784172800000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "ai-4",
+      "title": "Evaluating model output with graded rubrics",
+      "link": "https://example.com/ai-4",
+      "content": "Good evals grade an LLM's answers on a rubric instead of exact match. Machine learning teams use graded relevance to catch quality regressions before users do.",
+      "publishedAt": 1784259200000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "ai-5",
+      "title": "Reinforcement feedback and reward models",
+      "link": "https://example.com/ai-5",
+      "content": "RLHF trains a reward model from human preferences, then optimises a policy against it — a machine learning loop now standard for aligning transformers.",
+      "publishedAt": 1784345600000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "web-1",
+      "title": "Container queries land in every major browser",
+      "link": "https://example.com/web-1",
+      "content": "Container queries let a component respond to its own size, not the viewport. Shipping in every browser makes truly modular CSS layouts practical on the web platform.",
+      "publishedAt": 1784432000000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "web-2",
+      "title": "WebAssembly brings native speed to the browser",
+      "link": "https://example.com/web-2",
+      "content": "WebAssembly runs compiled code at near-native speed inside the browser sandbox, opening the web platform to games, codecs, and heavy compute.",
+      "publishedAt": 1784518400000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "web-3",
+      "title": "Structured concurrency arrives in JavaScript",
+      "link": "https://example.com/web-3",
+      "content": "Structured concurrency ties async tasks to a scope so nothing leaks. The proposal brings clearer cancellation to JavaScript running in the browser.",
+      "publishedAt": 1784604800000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "web-4",
+      "title": "View Transitions for smoother navigation",
+      "link": "https://example.com/web-4",
+      "content": "The View Transitions API animates between states with a few lines. It works in every modern browser and uses CSS for the animation.",
+      "publishedAt": 1784691200000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "web-5",
+      "title": "Building a scalable design system",
+      "link": "https://example.com/web-5",
+      "content": "A design system pays off when tokens and components share one source of truth. Modern CSS variables make theming across the web platform straightforward.",
+      "publishedAt": 1784777600000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "sec-1",
+      "title": "A critical vulnerability in a popular auth library",
+      "link": "https://example.com/sec-1",
+      "content": "The flaw let an attacker bypass authentication entirely. Patch now; the security advisory rates it critical and a proof-of-concept exploit is already public.",
+      "publishedAt": 1784864000000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "sec-2",
+      "title": "Rotating encryption keys without downtime",
+      "link": "https://example.com/sec-2",
+      "content": "Envelope encryption lets you re-wrap data keys without re-encrypting everything. A clean rotation story is table stakes for any serious security team.",
+      "publishedAt": 1784950400000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "sec-3",
+      "title": "Passkeys and the future of authentication",
+      "link": "https://example.com/sec-3",
+      "content": "Passkeys replace passwords with device-bound credentials, killing phishing at the root. It is the biggest authentication shift in a decade for security teams.",
+      "publishedAt": 1785036800000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "sec-4",
+      "title": "Anatomy of a supply-chain attack",
+      "link": "https://example.com/sec-4",
+      "content": "A single poisoned dependency became a working exploit against thousands of apps — a reminder that a transitive vulnerability is still your security problem.",
+      "publishedAt": 1785123200000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "sec-5",
+      "title": "End-to-end privacy for group messaging",
+      "link": "https://example.com/sec-5",
+      "content": "End-to-end encryption keeps a group chat readable only to its members. Getting the security model right for large groups is surprisingly hard.",
+      "publishedAt": 1785209600000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "hw-1",
+      "title": "A new GPU architecture built for inference",
+      "link": "https://example.com/hw-1",
+      "content": "The chip trades general-purpose flexibility for dense matrix throughput; the purpose-built hardware and its silicon are tuned end-to-end for low-latency inference.",
+      "publishedAt": 1785296000000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "hw-2",
+      "title": "The RISC-V processor gains real momentum",
+      "link": "https://example.com/hw-2",
+      "content": "An open instruction set means anyone can design a processor without licensing fees. Foundries are taping out RISC-V silicon in real volume.",
+      "publishedAt": 1785382400000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "hw-3",
+      "title": "Inside a modern memory controller chip",
+      "link": "https://example.com/hw-3",
+      "content": "The controller is the traffic cop between cores and DRAM. This chip devotes real silicon and careful hardware design to scheduling.",
+      "publishedAt": 1785468800000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "hw-4",
+      "title": "Why chiplets are the future",
+      "link": "https://example.com/hw-4",
+      "content": "Splitting a design into chiplets lets each chip use the best process node. It is how modern silicon keeps scaling as monolithic dies hit the reticle limit.",
+      "publishedAt": 1785555200000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "hw-5",
+      "title": "Power efficiency in mobile devices",
+      "link": "https://example.com/hw-5",
+      "content": "Battery life is won in the processor. Low-leakage silicon lets a mobile chip sip power without throttling under sustained load.",
+      "publishedAt": 1785641600000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "dev-1",
+      "title": "A faster build system for large monorepos",
+      "link": "https://example.com/dev-1",
+      "content": "Content-addressed caching means you rebuild only what changed. For a big monorepo the right build tools turn a coffee break into a few seconds.",
+      "publishedAt": 1785728000000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    },
+    {
+      "id": "dev-2",
+      "title": "Debugging async code without losing your mind",
+      "link": "https://example.com/dev-2",
+      "content": "Async bugs hide across await points where stack traces go quiet. Good developer tooling reconstructs the causal chain so debugging feels linear again.",
+      "publishedAt": 1785814400000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    },
+    {
+      "id": "dev-3",
+      "title": "Writing a compiler plugin in an afternoon",
+      "link": "https://example.com/dev-3",
+      "content": "Modern compiler APIs expose the AST so you can add a lint or codemod cheaply. We build a small plugin and wire it into the developer workflow.",
+      "publishedAt": 1785900800000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    },
+    {
+      "id": "dev-4",
+      "title": "Modern terminal utilities that speed you up",
+      "link": "https://example.com/dev-4",
+      "content": "A new wave of CLI tools — fuzzy finders, better greps, smarter pagers — makes the developer's day faster without ever leaving the terminal.",
+      "publishedAt": 1785987200000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    },
+    {
+      "id": "dev-5",
+      "title": "Reproducible environments with containers",
+      "link": "https://example.com/dev-5",
+      "content": "Pin every dependency so a new machine reproduces your setup byte for byte — reproducible builds give a developer team auditable, tamper-evident releases.",
+      "publishedAt": 1786073600000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    },
+    {
+      "id": "prod-1",
+      "title": "Designing onboarding that users actually finish",
+      "link": "https://example.com/prod-1",
+      "content": "Great onboarding respects the reader's time and removes every step that is not essential to the first win.",
+      "publishedAt": 1786160000000,
+      "sourceId": "product-notes",
+      "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "prod-2",
+      "title": "How to say no to a feature request",
+      "link": "https://example.com/prod-2",
+      "content": "A focused roadmap means turning down good ideas so the few that matter ship well and on time.",
+      "publishedAt": 1786246400000,
+      "sourceId": "product-notes",
+      "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "prod-3",
+      "title": "Pricing your subscription without guesswork",
+      "link": "https://example.com/prod-3",
+      "content": "Value-based pricing beats cost-plus for most subscription products; anchor on the outcome the reader buys, not the cost to serve.",
+      "publishedAt": 1786332800000,
+      "sourceId": "product-notes",
+      "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "prod-4",
+      "title": "Roadmaps that survive contact with reality",
+      "link": "https://example.com/prod-4",
+      "content": "Outcome-oriented roadmaps flex as you learn from real usage instead of committing to fixed dates a year out.",
+      "publishedAt": 1786419200000,
+      "sourceId": "product-notes",
+      "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "prod-5",
+      "title": "Measuring activation, not just signups",
+      "link": "https://example.com/prod-5",
+      "content": "Activation — the first real moment of value — predicts retention far better than raw signup counts ever will.",
+      "publishedAt": 1786505600000,
+      "sourceId": "product-notes",
+      "sourceTitle": "Product Notes"
+    },
+    {
+      "id": "br-ml",
+      "title": "Teaching computers to recognize images from examples",
+      "link": "https://example.com/br-ml",
+      "content": "Show the system thousands of labeled photos and it gradually learns the visual patterns that tell a cat from a dog. Nobody writes the rules by hand; the model discovers them from the examples alone, then generalizes to pictures it has never seen. This is how modern vision systems read handwriting, spot tumors in a scan, and sort produce on a conveyor.",
+      "publishedAt": 1786592000000,
+      "sourceId": "ml-weekly",
+      "sourceTitle": "ML Weekly"
+    },
+    {
+      "id": "br-web",
+      "title": "Making a site feel instant on a phone",
+      "link": "https://example.com/br-web",
+      "content": "Ship less up front, defer the offscreen work, and inline only what the first screen needs. Lazy-load the images, split the bundle, and keep the main thread free so scrolling stays smooth and every tap answers at once. A quick first paint is what makes a page feel native rather than sluggish.",
+      "publishedAt": 1786678400000,
+      "sourceId": "web-platform-news",
+      "sourceTitle": "Web Platform News"
+    },
+    {
+      "id": "br-sec",
+      "title": "Keeping attackers out of user accounts",
+      "link": "https://example.com/br-sec",
+      "content": "Stolen passwords, phishing pages, reused logins from an old breach, and a one-time code snatched over the phone — most account takeovers never crack any math. A password manager, physical keys, and an eye on failed-login spikes are what stop them.",
+      "publishedAt": 1786764800000,
+      "sourceId": "sec-digest",
+      "sourceTitle": "Security Digest"
+    },
+    {
+      "id": "br-hw",
+      "title": "Fabricating the tiny logic circuits inside every device",
+      "link": "https://example.com/br-hw",
+      "content": "Photolithography, etching, and ion doping turn a polished wafer into billions of transistors and logic gates. A semiconductor foundry stacks metal interconnect and shrinks each feature to a few nanometers — the microscopic switching fabric of every computer.",
+      "publishedAt": 1786851200000,
+      "sourceId": "silicon-report",
+      "sourceTitle": "Silicon Report"
+    },
+    {
+      "id": "br-dev",
+      "title": "Catching mistakes before code ships",
+      "link": "https://example.com/br-dev",
+      "content": "Static analysis and linting flag errors early: unused imports, unreachable branches, type mismatches, off-by-one slips. Pre-commit hooks and continuous checks run them on every change so bugs are caught before they ever ship.",
+      "publishedAt": 1786937600000,
+      "sourceId": "devtools-blog",
+      "sourceTitle": "Dev Tools Blog"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "ml-engineer",
+      "topics": ["machine learning", "neural networks", "LLM", "transformers", "AI"],
+      "relevance": {
+        "ai-1": 2,
+        "ai-2": 2,
+        "ai-3": 2,
+        "ai-4": 1,
+        "ai-5": 1,
+        "br-ml": 2
+      }
+    },
+    {
+      "id": "web-platform-dev",
+      "topics": ["browser", "web platform", "CSS", "JavaScript", "WebAssembly"],
+      "relevance": {
+        "web-1": 2,
+        "web-2": 2,
+        "web-3": 2,
+        "web-4": 1,
+        "web-5": 1,
+        "br-web": 2
+      }
+    },
+    {
+      "id": "security-engineer",
+      "topics": ["security", "vulnerability", "encryption", "authentication", "exploit"],
+      "relevance": {
+        "sec-1": 2,
+        "sec-2": 2,
+        "sec-3": 2,
+        "sec-4": 1,
+        "sec-5": 1,
+        "br-sec": 2
+      }
+    },
+    {
+      "id": "hardware-enthusiast",
+      "topics": ["hardware", "chip", "GPU", "processor", "silicon"],
+      "relevance": {
+        "hw-1": 2,
+        "hw-2": 2,
+        "hw-3": 2,
+        "hw-4": 1,
+        "hw-5": 1,
+        "br-hw": 2
+      }
+    },
+    {
+      "id": "devtools-user",
+      "topics": ["developer tools", "CLI", "build", "compiler", "debugging"],
+      "relevance": {
+        "dev-1": 2,
+        "dev-2": 2,
+        "dev-3": 2,
+        "dev-4": 1,
+        "dev-5": 1,
+        "br-dev": 2
+      }
+    }
+  ]
+}
